@@ -5,12 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="format-detection" content="telephone=no">
 
-  <!-- Meta / OG tags - config.js 값으로 script에서 동적 설정 -->
+  <!-- Meta / OG tags -->
+  <!-- ⚠️ 카카오톡/소셜 크롤러는 JS를 실행하지 않으므로 아래 '정적' 값이 실제로 사용됩니다.
+       값을 바꾼 뒤에는 카카오 디버거(https://developers.kakao.com/tool/debugger/sharing)에서
+       URL을 입력하고 '초기화'를 눌러 캐시를 비워야 새 썸네일이 반영됩니다. -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="성준＆지호's Wedding Invitation">
-  <meta property="og:description" content="2026년 11월 21일 메종 디탈리 결혼식">
-  <meta property="og:image" content="https://nchoi0617.github.io/my-wedding/images/og/1.jpg">
-  <meta name="description" content="">
+  <meta property="og:title" content="최성준 ♥ 이지호 결혼합니다">
+  <meta property="og:description" content="2026년 11월 21일, 소중한 분들을 초대합니다.">
+  <meta property="og:image" content="https://nchoi0617.github.io/my-wedding/images/og/1.jpg?v=2">
+  <meta property="og:image:width" content="1500">
+  <meta property="og:image:height" content="2100">
+  <meta name="description" content="2026년 11월 21일, 소중한 분들을 초대합니다.">
 
   <title>Wedding Invitation</title>
 
@@ -164,6 +169,62 @@
           <a class="btn btn--kakao" id="kakaoMapBtn" href="#" target="_blank" rel="noopener">카카오맵</a>
           <a class="btn btn--naver" id="naverMapBtn" href="#" target="_blank" rel="noopener">네이버지도</a>
         </div>
+      </div>
+    </section>
+
+    <!-- ─── RSVP Section (참석 의사) ─── -->
+    <section class="section rsvp" id="rsvp">
+      <div class="section__inner">
+        <div class="ornament animate-item" data-animate="fade-in">&#9993;</div>
+        <h2 class="section__title animate-item" data-animate="fade-up" id="rsvpTitle">참석 의사 전달</h2>
+        <p class="rsvp__desc animate-item" data-animate="fade-up" id="rsvpDesc"></p>
+
+        <form class="rsvp__form animate-item" data-animate="fade-up" id="rsvpForm" novalidate>
+          <div class="rsvp__field">
+            <span class="rsvp__label">구분</span>
+            <div class="rsvp__toggle" id="rsvpSide" role="group" aria-label="구분 선택">
+              <button type="button" class="rsvp__toggle-btn is-active" data-value="신랑측">신랑측</button>
+              <button type="button" class="rsvp__toggle-btn" data-value="신부측">신부측</button>
+            </div>
+          </div>
+
+          <div class="rsvp__field">
+            <label class="rsvp__label" for="rsvpName">성함</label>
+            <input class="rsvp__input" id="rsvpName" name="name" type="text" placeholder="대표자 성함" autocomplete="name" maxlength="20">
+          </div>
+
+          <div class="rsvp__field rsvp__field--tel" id="rsvpTelField" hidden>
+            <label class="rsvp__label" for="rsvpTel">연락처</label>
+            <input class="rsvp__input" id="rsvpTel" name="tel" type="tel" placeholder="010-0000-0000" autocomplete="tel" inputmode="tel" maxlength="20">
+          </div>
+
+          <div class="rsvp__field">
+            <label class="rsvp__label" for="rsvpCount">참석 인원</label>
+            <input class="rsvp__input" id="rsvpCount" name="count" type="number" min="1" max="99" inputmode="numeric" placeholder="본인 포함 총 인원">
+          </div>
+
+          <div class="rsvp__field">
+            <label class="rsvp__label" for="rsvpCompanion">동행인</label>
+            <input class="rsvp__input" id="rsvpCompanion" name="companion" type="text" placeholder="함께 오시는 분 성함 (선택)" maxlength="60">
+          </div>
+
+          <div class="rsvp__field">
+            <span class="rsvp__label">식사 여부</span>
+            <div class="rsvp__toggle" id="rsvpMeal" role="group" aria-label="식사 여부 선택">
+              <button type="button" class="rsvp__toggle-btn is-active" data-value="예정">예정</button>
+              <button type="button" class="rsvp__toggle-btn" data-value="안함">안함</button>
+              <button type="button" class="rsvp__toggle-btn" data-value="미정">미정</button>
+            </div>
+          </div>
+
+          <label class="rsvp__consent">
+            <input type="checkbox" id="rsvpConsent" class="rsvp__checkbox">
+            <span class="rsvp__consent-text">개인정보 수집 및 이용에 동의합니다 <em>(필수)</em><br>
+              <small>수집 항목: 성함·참석인원·식사여부 · 보유기간: 예식 종료 시까지</small></span>
+          </label>
+
+          <button type="submit" class="rsvp__submit" id="rsvpSubmit">참석 의사 전달하기</button>
+        </form>
       </div>
     </section>
 

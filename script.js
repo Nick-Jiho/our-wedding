@@ -115,9 +115,15 @@
       const el = document.querySelector(`meta[${attr}="${val}"]`);
       if (el) el.setAttribute('content', content);
     };
+    // OG 이미지는 반드시 절대경로여야 함 (상대경로는 소셜 미리보기에서 동작하지 않음).
+    // 참고: 카카오/소셜 크롤러는 JS를 실행하지 않으므로 실제 미리보기는 index.html의 정적 태그가 결정.
+    // 아래 동적 설정은 브라우저 내 일관성 유지용이며, 정적 태그와 동일한 값을 사용한다.
+    const base = (m.siteUrl || '').replace(/\/$/, '');
+    const ver = m.ogImageVersion ? `?v=${m.ogImageVersion}` : '';
+    const ogImage = base ? `${base}/images/og/1.jpg${ver}` : `images/og/1.jpg${ver}`;
     setMeta('property', 'og:title', m.title);
     setMeta('property', 'og:description', m.description);
-    setMeta('property', 'og:image', 'images/og/1.jpg');
+    setMeta('property', 'og:image', ogImage);
     setMeta('name', 'description', m.description);
   }
 
@@ -538,6 +544,118 @@
   }
 
   /* ═══════════════════════════════════════════
+     RSVP (참석 의사)
+     ═══════════════════════════════════════════ */
+
+  function initRSVP() {
+    const cfg = CONFIG.rsvp;
+    const section = $('#rsvp');
+    if (!section) return;
+
+    // RSVP 비활성화 시 섹션 자체를 숨김
+    if (!cfg || cfg.enabled === false) {
+      section.style.display = 'none';
+      return;
+    }
+
+    $('#rsvpTitle').textContent = cfg.title || '참석 의사 전달';
+    $('#rsvpDesc').textContent = cfg.desc || '';
+
+    // 연락처 입력란 표시 여부
+    if (cfg.askTel) $('#rsvpTelField').hidden = false;
+
+    // 토글 그룹 (단일 선택)
+    const setupToggle = (groupId) => {
+      const group = $(`#${groupId}`);
+      group.addEventListener('click', (e) => {
+        const btn = e.target.closest('.rsvp__toggle-btn');
+        if (!btn) return;
+        $$('.rsvp__toggle-btn', group).forEach((b) => b.classList.remove('is-active'));
+        btn.classList.add('is-active');
+      });
+    };
+    setupToggle('rsvpSide');
+    setupToggle('rsvpMeal');
+
+    const getToggleValue = (groupId) => {
+      const active = $(`#${groupId} .rsvp__toggle-btn.is-active`);
+      return active ? active.dataset.value : '';
+    };
+
+    const form = $('#rsvpForm');
+    const submitBtn = $('#rsvpSubmit');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = $('#rsvpName').value.trim();
+      const count = $('#rsvpCount').value.trim();
+      const consent = $('#rsvpConsent').checked;
+
+      if (!name) {
+        showToast('성함을 입력해 주세요');
+        $('#rsvpName').focus();
+        return;
+      }
+      if (!count || Number(count) < 1) {
+        showToast('참석 인원을 입력해 주세요');
+        $('#rsvpCount').focus();
+        return;
+      }
+      if (!consent) {
+        showToast('개인정보 수집에 동의해 주세요');
+        return;
+      }
+
+      const payload = {
+        side: getToggleValue('rsvpSide'),
+        name,
+        count,
+        companion: $('#rsvpCompanion').value.trim(),
+        meal: getToggleValue('rsvpMeal'),
+        tel: cfg.askTel ? $('#rsvpTel').value.trim() : ''
+      };
+
+      // 제출 endpoint 미설정 시 안내
+      if (!cfg.endpoint) {
+        showToast('아직 접수가 준비 중입니다. 잠시 후 다시 시도해 주세요');
+        console.warn('[RSVP] CONFIG.rsvp.endpoint가 비어 있습니다. RSVP-SETUP.md를 참고해 Google Apps Script URL을 입력하세요.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = '전달 중...';
+
+      try {
+        // Apps Script 웹앱으로 전송. CORS 회피를 위해 no-cors + form-encoded 사용.
+        await fetch(cfg.endpoint, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+          body: new URLSearchParams(payload).toString()
+        });
+        showRSVPThanks(form);
+      } catch (err) {
+        console.error('[RSVP] 전송 실패', err);
+        showToast('전송에 실패했습니다. 잠시 후 다시 시도해 주세요');
+        submitBtn.disabled = false;
+        submitBtn.textContent = '참석 의사 전달하기';
+      }
+    });
+  }
+
+  function showRSVPThanks(form) {
+    form.classList.add('is-submitted');
+    form.innerHTML = `
+      <div class="rsvp__thanks">
+        <div class="rsvp__thanks-icon">&#9825;</div>
+        소중한 마음 전해주셔서 감사합니다.<br>
+        당일 반갑게 맞이하겠습니다.
+      </div>
+    `;
+  }
+
+  /* ═══════════════════════════════════════════
      Footer
      ═══════════════════════════════════════════ */
 
@@ -622,6 +740,7 @@
     // Init sections that don't depend on image detection
     initPhotoModal();
     initLocation();
+    initRSVP();
     initAccounts();
     initFooter();
     initScrollAnimations();
