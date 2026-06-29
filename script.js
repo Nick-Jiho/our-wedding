@@ -572,9 +572,6 @@
     $('#rsvpModalTitle').textContent = title;
     $('#rsvpModalDesc').textContent = desc;
 
-    // 연락처 입력란 표시 여부
-    if (cfg.askTel) $('#rsvpTelField').hidden = false;
-
     // 모달 열기/닫기
     const modal = $('#rsvpModal');
     const openModal = () => {
@@ -641,8 +638,7 @@
         side: getToggleValue('rsvpSide'),
         name,
         count,
-        meal: getToggleValue('rsvpMeal'),
-        tel: cfg.askTel ? $('#rsvpTel').value.trim() : ''
+        meal: getToggleValue('rsvpMeal')
       };
 
       // 제출 endpoint 미설정 시 안내

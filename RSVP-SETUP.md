@@ -27,7 +27,7 @@ function doPost(e) {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = ss.getSheetByName('RSVP') || ss.insertSheet('RSVP');
     if (sheet.getLastRow() === 0) {
-      sheet.appendRow(['제출시각', '구분', '성함', '참석인원', '식사여부', '연락처']);
+      sheet.appendRow(['제출시각', '구분', '성함', '참석인원', '식사여부']);
     }
     var p = (e && e.parameter) || {};
     sheet.appendRow([
@@ -35,8 +35,7 @@ function doPost(e) {
       p.side || '',
       p.name || '',
       p.count || '',
-      p.meal || '',
-      p.tel || ''
+      p.meal || ''
     ]);
     return ContentService
       .createTextOutput(JSON.stringify({ result: 'ok' }))
@@ -86,7 +85,5 @@ function doPost(e) {
 
 - **제출은 됐다는데 시트에 안 쌓여요**
   → 3번에서 "액세스 권한"을 `모든 사용자`로 했는지 확인하세요. 코드를 수정했다면 **새 배포**가 아니라 **배포 관리 → 편집(연필) → 버전: 새 버전**으로 다시 배포해야 반영됩니다.
-- **연락처도 받고 싶어요**
-  → `config.js`의 `rsvp.askTel` 을 `true` 로 바꾸면 입력란이 생깁니다.
 - **개인정보가 외부로 새지 않나요?**
   → 데이터는 본인 구글 계정의 시트에만 저장됩니다. 제3자 서비스를 거치지 않습니다.
