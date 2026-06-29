@@ -882,6 +882,15 @@ a {
   filter: sepia(0.08) saturate(0.95);
 }
 
+.location__map-img.is-zoomable {
+  cursor: pointer;
+  transition: transform var(--transition);
+}
+
+.location__map-img.is-zoomable:hover {
+  transform: scale(1.02);
+}
+
 .location__links {
   display: flex;
   gap: var(--spacing-sm);

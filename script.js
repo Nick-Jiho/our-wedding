@@ -404,10 +404,11 @@
   function showModalImage() {
     const img = $('#modalImg');
     img.src = modalImages[modalIndex];
-    $('#modalCounter').textContent = `${modalIndex + 1} / ${modalImages.length}`;
+    const multiple = modalImages.length > 1;
+    $('#modalCounter').textContent = multiple ? `${modalIndex + 1} / ${modalImages.length}` : '';
 
-    $('#modalPrev').style.display = modalIndex > 0 ? '' : 'none';
-    $('#modalNext').style.display = modalIndex < modalImages.length - 1 ? '' : 'none';
+    $('#modalPrev').style.display = multiple && modalIndex > 0 ? '' : 'none';
+    $('#modalNext').style.display = multiple && modalIndex < modalImages.length - 1 ? '' : 'none';
   }
 
   function modalNavigate(dir) {
@@ -477,9 +478,15 @@
     $('#locationHall').textContent = w.hall || '';
     $('#locationAddress').textContent = w.address;
     $('#locationTel').textContent = w.tel ? `Tel. ${w.tel}` : '';
-    $('#locationMapImg').src = 'images/location/1.jpg';
+    const mapImg = $('#locationMapImg');
+    const mapSrc = 'images/location/1.jpg';
+    mapImg.src = mapSrc;
     $('#kakaoMapBtn').href = w.mapLinks.kakao || '#';
     $('#naverMapBtn').href = w.mapLinks.naver || '#';
+
+    // 약도 이미지 클릭 시 팝업으로 확대 보기 (갤러리 모달 재사용)
+    mapImg.classList.add('is-zoomable');
+    mapImg.addEventListener('click', () => openPhotoModal([mapSrc], 0));
 
     $('#copyAddressBtn').addEventListener('click', () => {
       copyToClipboard(w.address, '주소가 복사되었습니다');
