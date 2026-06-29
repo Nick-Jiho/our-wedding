@@ -117,9 +117,15 @@
     document.body.classList.add('no-scroll');
   }
   function unlockScroll() {
+    // html에 scroll-behavior:smooth가 걸려 있어 복원 시 '맨 위→원위치' 애니메이션이 보인다.
+    // 복원하는 순간만 smooth를 꺼서 깜빡임 없이 즉시 같은 위치에 고정한다.
+    const html = document.documentElement;
+    const prevBehavior = html.style.scrollBehavior;
+    html.style.scrollBehavior = 'auto';
     document.body.classList.remove('no-scroll');
     document.body.style.top = '';
     window.scrollTo(0, savedScrollY);
+    html.style.scrollBehavior = prevBehavior;
   }
 
   /* ═══════════════════════════════════════════
