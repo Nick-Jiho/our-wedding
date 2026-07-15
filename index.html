@@ -178,7 +178,11 @@
     <!-- ─── Calendar Section ─── -->
     <section class="section calendar-section" id="calendarSection">
       <div class="section__inner">
-        <h2 class="section__title animate-item" data-animate="fade-up">예식 일시</h2>
+        <h2 class="section__title animate-item" data-animate="fade-up">예식 안내</h2>
+        <div class="ceremony-info animate-item" data-animate="fade-up">
+          <p class="ceremony-info__datetime" id="ceremonyDatetime"></p>
+          <p class="ceremony-info__venue" id="ceremonyVenue"></p>
+        </div>
         <div class="calendar animate-item" data-animate="scale-in" id="calendarGrid"></div>
         <div class="calendar-actions animate-item" data-animate="fade-up">
           <a class="btn btn--outline" id="googleCalBtn" href="#" target="_blank" rel="noopener">
