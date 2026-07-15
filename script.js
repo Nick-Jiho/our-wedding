@@ -799,7 +799,30 @@
      Init
      ═══════════════════════════════════════════ */
 
+  /* ═══════════════════════════════════════════
+     Hero Height (모바일 주소창 대응 - 사진 줌인 방지)
+     ═══════════════════════════════════════════ */
+  function initHeroHeight() {
+    const root = document.documentElement;
+    let lastWidth = window.innerWidth;
+    const apply = () => {
+      root.style.setProperty('--hero-height', window.innerHeight + 'px');
+      lastWidth = window.innerWidth;
+    };
+    apply();
+
+    // 스크롤로 주소창이 접히면 '높이'만 바뀐다 → 무시해야 히어로 사진이 확대되지 않는다.
+    // 실제 화면 회전/창 크기 변경은 '너비'가 함께 바뀌므로 그때만 다시 계산한다.
+    window.addEventListener('resize', () => {
+      if (window.innerWidth !== lastWidth) apply();
+    }, { passive: true });
+    window.addEventListener('orientationchange', () => {
+      setTimeout(apply, 300); // 회전 후 innerHeight가 안정된 뒤 재계산
+    });
+  }
+
   async function init() {
+    initHeroHeight();
     setMetaTags();
     initCurtain();
     initHero();

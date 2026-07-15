@@ -428,11 +428,13 @@ a {
    ═══════════════════════════════════════════ */
 .hero {
   position: relative;
-  min-height: 100vh;
-  /* svh(작은 뷰포트 높이) = 주소창이 '펼쳐진' 상태 기준 고정 높이.
-     스크롤로 주소창이 접혔다 펴져도 히어로 높이가 변하지 않아
-     화면이 '작아졌다 커졌다' 하는 현상을 막는다. */
-  min-height: 100svh;
+  min-height: 100vh;                       /* 아주 오래된 브라우저 폴백 */
+  min-height: 100svh;                      /* svh 지원 시 폴백 (일부 인앱 브라우저는 svh를 동적으로 취급) */
+  /* JS(initHeroHeight)가 로드 시점 뷰포트 높이를 px로 '고정'해 --hero-height에 넣는다.
+     스크롤로 주소창이 접혀 뷰포트가 커져도 이 값은 안 변하므로
+     object-fit:cover 히어로 사진이 점점 확대(줌인)되는 현상이 사라진다.
+     JS 미동작 시 위의 svh/vh로 자연스럽게 폴백된다. */
+  min-height: var(--hero-height, 100svh);
   display: flex;
   flex-direction: column;
   align-items: center;
