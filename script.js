@@ -806,12 +806,20 @@
     const root = document.documentElement;
     let lastWidth = window.innerWidth;
     const apply = () => {
-      root.style.setProperty('--hero-height', window.innerHeight + 'px');
+      // 히어로를 '주소창이 접힌' 큰 뷰포트 높이로 고정한다.
+      //  - screen.height는 주소창 유무와 무관한 화면 높이(≈ 주소창 접힌 상태)다.
+      //    이 값으로 고정하면 스크롤로 주소창이 접혀도 히어로 높이가 안 변하므로
+      //    (1) object-fit 사진이 점점 확대(줌인)되지 않고
+      //    (2) 히어로가 화면을 꽉 채워 아래 인사말 섹션이 비쳐 올라오지 않는다.
+      //  - 일부 기기가 screen.height를 비정상적으로 크게 보고할 때를 대비해 상한(1.4배)을 둔다.
+      const screenH = (window.screen && window.screen.height) || 0;
+      const large = Math.min(Math.max(window.innerHeight, screenH), window.innerHeight * 1.4);
+      root.style.setProperty('--hero-height', Math.round(large) + 'px');
       lastWidth = window.innerWidth;
     };
     apply();
 
-    // 스크롤로 주소창이 접히면 '높이'만 바뀐다 → 무시해야 히어로 사진이 확대되지 않는다.
+    // 스크롤로 주소창이 접히면 '높이'만 바뀐다 → 무시해야 히어로가 안 흔들린다.
     // 실제 화면 회전/창 크기 변경은 '너비'가 함께 바뀌므로 그때만 다시 계산한다.
     window.addEventListener('resize', () => {
       if (window.innerWidth !== lastWidth) apply();
