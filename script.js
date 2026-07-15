@@ -315,6 +315,21 @@
 
     grid.appendChild(daysContainer);
 
+    // Caption: 날짜 + 시간 (그리드는 날짜만 표시하므로 시간을 함께 안내)
+    const hours = dt.getHours();
+    const minutes = dt.getMinutes();
+    const period = hours < 12 ? '오전' : '오후';
+    const h12 = hours % 12 || 12;
+    const timeText = `${period} ${h12}시${minutes > 0 ? ` ${minutes}분` : ''}`;
+    const dateText = `${year}년 ${month + 1}월 ${weddingDay}일 ${weekdays[dt.getDay()]}요일`;
+
+    const caption = document.createElement('div');
+    caption.className = 'calendar__caption';
+    caption.innerHTML =
+      `<span class="calendar__caption-date">${dateText}</span>` +
+      `<span class="calendar__caption-time">${timeText}</span>`;
+    grid.appendChild(caption);
+
     // Google Calendar link
     const startDate = dt.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
     const endDt = new Date(dt.getTime() + 2 * 60 * 60 * 1000);
